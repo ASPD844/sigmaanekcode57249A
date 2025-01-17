@@ -129,10 +129,9 @@ void liftControl(){
 void colorSort(){
     if (alliancecolor == true) {
         if (color.get_hue() >= 140 && color.get_hue() <= 300) {
-            pros::lcd::print(6, "blue ring detected");
-            pros::delay(3);
-            intake.brake();
-            intake.move(10);
+            pros::lcd::print(6, "blue ring detected");;
+            intake.move(0);
+            intake.move(20);
         }
     }
     if (alliancecolor == false) {
