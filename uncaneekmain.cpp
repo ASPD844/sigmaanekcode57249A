@@ -40,7 +40,7 @@ bool pistonliftbool = LOW;
 //bool doink = LOW;
 bool R2_pressed = false;
 bool A_pressed = false;
-bool alliancecolor = true; //true = red alliance
+bool alliancecolor = false; //true = red alliance
 
 
 
@@ -127,27 +127,27 @@ void liftControl(){
 }
 
 
-void colorSort(){
-    intake.set_brake_mode(pros::MotorBrake::brake);
-    if (alliancecolor == true) {
-        if (color.get_hue() >= 190 && color.get_hue() <= 230) {
-            pros::lcd::print(6, "blue ring detected");
-            intake.brake();
-            intake.move(0);
-            pros::delay(200);
-            intake.move(-127);
-        }
-    }
-    if (alliancecolor == false) {
-        if (color.get_hue() <= 40 || color.get_hue() >= 350) {
-            pros::lcd::print(6, "red ring detected");
-            intake.brake();
-            intake.move(0);
-            pros::delay(200);
-            intake.move(-127);
-        }
-    }
-}
+// void colorSort(){
+//     intake.set_brake_mode(pros::MotorBrake::brake);
+//     if (alliancecolor == true) {
+//         if (color.get_hue() >= 190 && color.get_hue() <= 230) {
+//             pros::lcd::print(6, "blue ring detected");
+//             intake.brake();
+//             intake.move(0);
+//             pros::delay(200);
+//             intake.move(-127);
+//         }
+//     }
+//     if (alliancecolor == false) {
+//         if (color.get_hue() <= 40 || color.get_hue() >= 350) {
+//             pros::lcd::print(6, "red ring detected");
+//             intake.brake();
+//             intake.move(0);
+//             pros::delay(200);
+//             intake.move(-127);
+//         }
+//     }
+// }
 
 
 
@@ -209,19 +209,19 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */ 
-int current_auton_selection = 5;
+int current_auton_selection = 3;
 void autonomous() { 
-    pros::Task autotask([]{
+    /*::Task autotask([]{
         while(true) {
-            colorSort();
-            pros::delay(10);
+            //colorSort();
+            //pros::delay(10);
         }
-    });
+    });*/
     switch(current_auton_selection){
         case 0: //red negative safe
             chassis.setPose(0, 0, 0);
             chassis.turnToHeading(300, 750,{.maxSpeed =55});
-            chassis.moveToPoint(-12, 13.5, 1500, {.maxSpeed = 75});
+            chassis.moveToPoint(-10, 14, 1500, {.maxSpeed = 75});
             chassis.waitUntilDone();
             nextState();
             nextState();
@@ -238,16 +238,16 @@ void autonomous() {
             intake.move(-127);
             chassis.moveToPoint(0, -15, 300);
             chassis.turnToHeading(135, 650);
-            chassis.moveToPoint(12, -30, 1000);
+            chassis.moveToPoint(12, -29, 1000);
             chassis.turnToHeading(110,750);
             chassis.moveToPoint(22,-34,1000);
             chassis.moveToPoint(0, -20, 900,{.forwards = false});
             chassis.turnToHeading(90, 650);
             chassis.moveToPoint(15, -20, 1500);
             pros::delay(1750);
+            chassis.waitUntilDone();
             chassis.turnToHeading(270,500);
             chassis.moveToPoint(-15, -10, 1000);
-            chassis.waitUntilDone();
             nextState();
             nextState();
             nextState();
@@ -401,7 +401,7 @@ void autonomous() {
         case 2: // boltup blue negative
             chassis.setPose(0, 0, 0);
             chassis.turnToHeading(-300, 750,{.maxSpeed =55});
-            chassis.moveToPoint(12.75, 13.5, 1500, {.maxSpeed = 75});
+            chassis.moveToPoint(11.5, 13, 1500, {.maxSpeed = 75});
             chassis.waitUntilDone();
             nextState();
             nextState();
@@ -418,16 +418,17 @@ void autonomous() {
             intake.move(-127);
             chassis.moveToPoint(0, -15, 300);
             chassis.turnToHeading(-135, 650);
-            chassis.moveToPoint(-12, -30, 1000);
+            chassis.moveToPoint(-12, -28, 1000);
             chassis.turnToHeading(-110,750);
-            chassis.moveToPoint(-22,-34,1000);
+            chassis.moveToPoint(-22,-32,1000);
             chassis.moveToPoint(0, -20, 900,{.forwards = false});
             chassis.turnToHeading(-90, 650);
             chassis.moveToPoint(-15, -20, 1500);
             pros::delay(1750);
+            chassis.waitUntilDone();
             chassis.turnToHeading(-270,500);
             chassis.moveToPoint(15, -10, 1000);
-            chassis.waitUntilDone();
+
             nextState();
             nextState();
             nextState();
@@ -480,7 +481,7 @@ void autonomous() {
             chassis.setPose(0, 0, 0);
             frontstage.move(-127);
             doink.set_value(true);
-            chassis.moveToPoint(0, 34, 900, {.minSpeed = 50});
+            chassis.moveToPoint(0, 34, 900, {.minSpeed = 80});
             chassis.turnToHeading(300, 700);
             chassis.moveToPoint(17, 26, 1200, {.forwards = false, .maxSpeed = 90});
             chassis.waitUntilDone();
@@ -490,18 +491,21 @@ void autonomous() {
             chassis.moveToPoint(-13, 30, 1000, {.maxSpeed = 80});
             chassis.turnToHeading(190, 1200, {.maxSpeed = 80});
             doink.set_value(true);
-            chassis.moveToPoint(-29, 18, 2500, {.maxSpeed = 70});
-            chassis.turnToHeading(150, 800);
+            intake.move(0);
+            chassis.moveToPoint(-29, 12, 2500, {.maxSpeed = 70});
+            chassis.turnToHeading(110, 800);
             chassis.waitUntilDone();
             doink.set_value(false);
-            chassis.turnToHeading(190, 800);
-            chassis.moveToPoint(-30.5, 10, 1000, {.maxSpeed = 70});
-            chassis.moveToPoint(-15, 18, 1000, {.maxSpeed = 70});
+            chassis.moveToPoint(-30, 20, 1200, {.forwards = false}); //adjust
+            chassis.turnToHeading(200, 800);
+            intake.move(-127);
+            chassis.moveToPoint(-31.5, 5, 1000, {.maxSpeed = 70});
+            chassis.moveToPoint(-15, 15, 1000, {.maxSpeed = 70});
             chassis.turnToHeading(0, 800);
             chassis.waitUntilDone();
             clamp.set_value(false);
             chassis.turnToHeading(180, 800);
-            chassis.moveToPoint(-13, 30, 1200, {.forwards = false, .maxSpeed = 80});
+            chassis.moveToPoint(-13, 45, 2000, {.forwards = false, .maxSpeed = 80});
             break;
         case 5:
             clamp.set_value(true);
@@ -525,8 +529,8 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-    pros::delay(20);
     while (true) {
+        
          // print robot location to the brain screen
         pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
         pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
@@ -611,4 +615,8 @@ void opcontrol() {
         // delay to save resources
         pros::delay(25);
     }
+
+    
+            
+            
 }
