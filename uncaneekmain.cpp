@@ -120,12 +120,34 @@ void nextState(){ //macro to score
 }
 
 void liftControl(){
-    double kp = 2;
+    double kp = 2.5;
     double error = target - (wallrotational.get_position()/100.0);
     double velocity = kp*error;
     ladybrown.move(velocity);
 }
 
+void easyLoad(){
+    currstate = 0;
+    nextState();
+    while(color.get_proximity() < 200){
+        intake.move(-127);
+    }
+    if(color.get_proximity()>200){
+    intake.move(-127);
+    pros::delay(4000);
+    intake.move(0);
+    nextState();
+    }
+    while(color.get_proximity() < 200){
+        intake.move(-127);
+    }
+    if(color.get_proximity()>200){
+    intake.move(-127);
+    pros::delay(4000);
+    intake.move(0);
+    nextState();
+    }
+}
 
 // void colorSort(){
 //     intake.set_brake_mode(pros::MotorBrake::brake);
@@ -185,7 +207,9 @@ void initialize() {
  * the VEX Competition Switch, following either autonomous or opcontrol. When
  * the robot is enabled, this task will exit.
  */
-void disabled() {}
+void disabled() {
+    clamp.set_value(true);
+}
 
 /**
  * Runs after initialize(), and before autonomous when connected to the Field
@@ -209,7 +233,7 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */ 
-int current_auton_selection = 3;
+int current_auton_selection = 1;
 void autonomous() { 
     /*::Task autotask([]{
         while(true) {
@@ -284,10 +308,10 @@ void autonomous() {
 
 
             break;
-        case 1: //AneekSkills
+        case 1: //Skills
             chassis.setPose(0, 0, 0);
             intake.move(-127);
-            pros::delay(750);
+            pros::delay(500);
             intake.move(0);
             chassis.moveToPoint(0, 13, 750);
             chassis.turnToHeading(90, 750);
@@ -297,106 +321,205 @@ void autonomous() {
             clamp.set_value(true);
             pros::delay(250);
             intake.move(-127);
-            chassis.moveToPoint(-20,17,750);
-            chassis.turnToHeading(0 , 500);  
-            chassis.moveToPoint(-20, 45, 500);
-            chassis.turnToHeading(300, 1000);
-            chassis.moveToPoint(-55, 65, 1000);
+            chassis.turnToHeading(0, 500);  
+            chassis.moveToPoint(-23, 56, 800); //ring 1
+            chassis.moveToPoint(-23, 25, 800, {.forwards = false});
+            chassis.turnToHeading(320, 700);
+            chassis.moveToPoint(-42, 63, 800);
+            chassis.turnToHeading(350, 500);
+            chassis.moveToPoint(-49, 82, 800); //ring 2
+            chassis.waitUntilDone();
+            pros::delay(800); 
+            chassis.turnToHeading(180, 700);
+            chassis.moveToPoint(-47.5, 68, 800); //ring 3
+            chassis.waitUntilDone();
+            nextState();
+            chassis.turnToHeading(270, 750);
+            chassis.moveToPoint(-59, 66, 1000, {.maxSpeed = 70});
+            chassis.turnToHeading(270, 700);
+            chassis.waitUntilDone();
+            intake.move(0);
+            nextState();
+            nextState();
+            pros::delay(800);
+            intake.move(-127);
+            nextState();
+            pros::delay(100);
+            chassis.moveToPoint(-53, 65, 800, {.forwards = false});
+            chassis.waitUntilDone();
+            chassis.turnToHeading(180, 700);
+            chassis.moveToPoint(-53, 12, 2000, {.maxSpeed = 80});
+            chassis.moveToPoint(-53, 16, 1000, {.forwards = false});
             chassis.turnToHeading(270, 1000);
-            chassis.moveToPoint(-48, 65, 1000, {.forwards = false});
-            chassis.turnToHeading(180, 1000);
-            chassis.moveToPoint(-48, 12, 5000, {.maxSpeed = 80});
-            chassis.moveToPoint(-48, 20, 1000, {.forwards = false});
-            chassis.turnToHeading(270, 1000);
-            chassis.moveToPoint(-59, 24, 1000);
+            chassis.moveToPoint(-59, 20, 1000);
             chassis.moveToPoint(-50, 20, 1000, {.forwards = false});
             chassis.turnToHeading(315, 500);
             chassis.moveToPoint(-65, 5, 1000, {.forwards = false});
             chassis.waitUntilDone();
             intake.move(127);
-            pros::delay(500);
+            pros::delay(100);
             clamp.set_value(false);
             //quadrant 1 end
-            pros::delay(250);
+
             intake.move(-127);
+            pros::delay(200);
             chassis.moveToPoint(-50, 15, 1000);
             chassis.turnToHeading(270,1000);
-            chassis.moveToPoint(0, 18, 3000,{.forwards = false});
-            chassis.moveToPoint(20, 18, 1500,{.forwards = false, .maxSpeed = 80});
+            chassis.moveToPoint(0, 18, 3000,{.forwards = false, .minSpeed = 40});
+            chassis.moveToPoint(16, 18, 1500,{.forwards = false, .maxSpeed = 90});
             chassis.waitUntilDone();
             intake.move(0);
             pros::delay(250);
+
             //quadrant 2 start
             clamp.set_value(true);
-            pros::delay(500);
+            pros::delay(100);
             intake.move(-127);
-            //time short start
             chassis.turnToHeading(0,750);
-            chassis.moveToPoint(20,40,1500);
-            chassis.turnToHeading(60, 750);
-            chassis.moveToPoint(45, 60, 1000);
-            chassis.turnToHeading(90, 750);
-            //time short
-            chassis.turnToHeading(180, 1000);
-            chassis.moveToPoint(47, 10, 5000, {.maxSpeed = 80});
-            chassis.moveToPoint(43, 20, 1000, {.forwards = false});
-            chassis.turnToHeading(90,1000);
-            chassis.moveToPoint(55, 25, 1000);
-            chassis.turnToHeading(0, 1000);
-            chassis.moveToPoint(60, 5, 1000, {.forwards = false});
-            chassis.turnToHeading(305, 750);
+            chassis.moveToPoint(16,36,1000);
+            chassis.turnToHeading(30,750);
+            chassis.moveToPoint(35,89,1700);
+            pros::delay(700);
+            chassis.turnToHeading(100,500);
+            chassis.turnToHeading(183,500);
+            chassis.moveToPoint(31.75,69,1000);
+            chassis.turnToHeading(90,750);
+            chassis.waitUntilDone();
+            nextState();
+            pros::delay(100);
+            chassis.moveToPoint(44,66,1000);
+            chassis.turnToHeading(90,750);
+            chassis.waitUntilDone();
+            intake.move(0);
+            nextState();
+            nextState();
+            pros::delay(750);
+            intake.move(-127);
+            nextState();
+            pros::delay(100);
+            chassis.moveToPoint(34,75,1000, {.forwards = false});
+            chassis.turnToHeading(180,750);
+            chassis.moveToPoint(34,8,1500, {.maxSpeed = 80});
+            chassis.moveToPoint(34, 14, 1000, {.forwards = false});
+            chassis.turnToHeading(90, 1000);
+            chassis.moveToPoint(49, 21, 1000);
+            chassis.turnToHeading(-315, 500);
+            chassis.moveToPoint(57, 10, 1000, {.forwards = false});
             chassis.waitUntilDone();
             intake.move(127);
-            pros::delay(250);
-
-            //quadrant 2 end
+            pros::delay(100);
             clamp.set_value(false);
-            intake.move(0);
-            frontstage.move(-127);
-            pros::delay(500);
-            //center field
-            chassis.moveToPoint(0, 65, 2000);
-            chassis.moveToPoint(-20, 80, 1500);
-            chassis.waitUntilDone();
-            frontstage.move(0);
-            chassis.moveToPoint(-25, 85, 1000);
-            chassis.moveToPoint(-20, 80, 1500,{.forwards = false});
-            chassis.turnToHeading(225, 1000);
-            chassis.moveToPoint(0, 120, 2000, {.forwards = false, .maxSpeed = 65});
-            chassis.waitUntilDone();
-            //last mogo for scoring
-            clamp.set_value(true);
-            pros::delay(500);
-            intake.move(-127);
-            chassis.moveToPoint(-60, 90, 1500);
-            chassis.turnToHeading(0,1000);
-            chassis.moveToPoint(-65, 110, 1000);
-            chassis.turnToHeading(45, 500);
-            chassis.moveToPoint(-55, 120, 1000);
-            chassis.turnToHeading(190, 750);
-            chassis.moveToPoint(-55,110, 1000);
-            chassis.waitUntilDone();
-            pros::delay(1000);
-            chassis.moveToPoint(-75, 130, 1000,{.forwards = false});
-            clamp.set_value(false);
-            //release last mogo
-
-            //Quadrant 4
-            chassis.turnToHeading(135, 750);
-            chassis.moveToPoint(-40, 115, 2500, {.maxSpeed = 75});
-            chassis.moveToPoint(-20, 115, 1000);
-            chassis.turnToHeading(60, 750);
-            chassis.moveToPoint(25, 134, 1000);
-            chassis.turnToHeading(90, 1000);
-            chassis.moveToPoint(55, 134,2000);
-            chassis.moveToPoint(-20,100, 1000,{.forwards = false});
-            
-            
-            
-
-
-
             break;
+
+
+
+            // chassis.setPose(0, 0, 0);
+            // intake.move(-127);
+            // pros::delay(750);
+            // intake.move(0);
+            // chassis.moveToPoint(0, 13, 750);
+            // chassis.turnToHeading(90, 750);
+            // chassis.moveToPoint(-23, 17, 1250, {.forwards = false, .maxSpeed = 80});
+            // chassis.waitUntilDone();
+            // //clamp first mogo
+            // clamp.set_value(true);
+            // pros::delay(250);
+            // intake.move(-127);
+            // chassis.moveToPoint(-20,17,750);
+            // chassis.turnToHeading(0 , 500);  
+            // chassis.moveToPoint(-20, 45, 500);
+            // chassis.turnToHeading(300, 1000);
+            // chassis.moveToPoint(-55, 65, 1000);
+            // chassis.turnToHeading(270, 1000);
+            // chassis.moveToPoint(-48, 65, 1000, {.forwards = false});
+            // chassis.turnToHeading(180, 1000);
+            // chassis.moveToPoint(-48, 12, 5000, {.maxSpeed = 80});
+            // chassis.moveToPoint(-48, 20, 1000, {.forwards = false});
+            // chassis.turnToHeading(270, 1000);
+            // chassis.moveToPoint(-59, 24, 1000);
+            // chassis.moveToPoint(-50, 20, 1000, {.forwards = false});
+            // chassis.turnToHeading(315, 500);
+            // chassis.moveToPoint(-65, 5, 1000, {.forwards = false});
+            // chassis.waitUntilDone();
+            // intake.move(127);
+            // pros::delay(500);
+            // clamp.set_value(false);
+            // //quadrant 1 end
+            // pros::delay(250);
+            // intake.move(-127);
+            // chassis.moveToPoint(-50, 15, 1000);
+            // chassis.turnToHeading(270,1000);
+            // chassis.moveToPoint(0, 18, 3000,{.forwards = false});
+            // chassis.moveToPoint(20, 18, 1500,{.forwards = false, .maxSpeed = 80});
+            // chassis.waitUntilDone();
+            // intake.move(0);
+            // pros::delay(250);
+            // //quadrant 2 start
+            // clamp.set_value(true);
+            // pros::delay(500);
+            // intake.move(-127);
+            // //time short start
+            // chassis.turnToHeading(0,750);
+            // chassis.moveToPoint(20,40,1500);
+            // chassis.turnToHeading(60, 750);
+            // chassis.moveToPoint(45, 60, 1000);
+            // chassis.turnToHeading(90, 750);
+            // //time short
+            // chassis.turnToHeading(180, 1000);
+            // chassis.moveToPoint(47, 10, 5000, {.maxSpeed = 80});
+            // chassis.moveToPoint(43, 20, 1000, {.forwards = false});
+            // chassis.turnToHeading(90,1000);
+            // chassis.moveToPoint(55, 25, 1000);
+            // chassis.turnToHeading(0, 1000);
+            // chassis.moveToPoint(60, 5, 1000, {.forwards = false});
+            // chassis.turnToHeading(305, 750);
+            // chassis.waitUntilDone();
+            // intake.move(127);
+            // pros::delay(250);
+
+            // //quadrant 2 end
+            // clamp.set_value(false);
+            // intake.move(0);
+            // frontstage.move(-127);
+            // pros::delay(500);
+            // //center field
+            // chassis.moveToPoint(0, 65, 2000);
+            // chassis.moveToPoint(-20, 80, 1500);
+            // chassis.waitUntilDone();
+            // frontstage.move(0);
+            // chassis.moveToPoint(-25, 85, 1000);
+            // chassis.moveToPoint(-20, 80, 1500,{.forwards = false});
+            // chassis.turnToHeading(225, 1000);
+            // chassis.moveToPoint(0, 120, 2000, {.forwards = false, .maxSpeed = 65});
+            // chassis.waitUntilDone();
+            // //last mogo for scoring
+            // clamp.set_value(true);
+            // pros::delay(500);
+            // intake.move(-127);
+            // chassis.moveToPoint(-60, 90, 1500);
+            // chassis.turnToHeading(0,1000);
+            // chassis.moveToPoint(-65, 110, 1000);
+            // chassis.turnToHeading(45, 500);
+            // chassis.moveToPoint(-55, 120, 1000);
+            // chassis.turnToHeading(190, 750);
+            // chassis.moveToPoint(-55,110, 1000);
+            // chassis.waitUntilDone();
+            // pros::delay(1000);
+            // chassis.moveToPoint(-75, 130, 1000,{.forwards = false});
+            // clamp.set_value(false);
+            // //release last mogo
+
+            // //Quadrant 4
+            // chassis.turnToHeading(135, 750);
+            // chassis.moveToPoint(-40, 115, 2500, {.maxSpeed = 75});
+            // chassis.moveToPoint(-20, 115, 1000);
+            // chassis.turnToHeading(60, 750);
+            // chassis.moveToPoint(25, 134, 1000);
+            // chassis.turnToHeading(90, 1000);
+            // chassis.moveToPoint(55, 134,2000);
+            // chassis.moveToPoint(-20,100, 1000,{.forwards = false});
+
+            // break;
   
         case 2: // boltup blue negative
             chassis.setPose(0, 0, 0);
@@ -507,9 +630,57 @@ void autonomous() {
             chassis.turnToHeading(180, 800);
             chassis.moveToPoint(-13, 45, 2000, {.forwards = false, .maxSpeed = 80});
             break;
-        case 5:
+        case 5: // SAWP red
+            chassis.setPose(0, 0, 0);
+            chassis.moveToPoint(0,3.75,500, {.minSpeed = 100});
+            chassis.turnToHeading(35, 500);
+            nextState();
+            nextState();
+            nextState();
+            pros::delay(450);
+            chassis.moveToPoint(-37, -2, 1250, {.forwards = false, .maxSpeed = 90});
+            chassis.waitUntilDone();
+            pros::delay(200);
             clamp.set_value(true);
+            nextState();
+            chassis.turnToHeading(240, 600);
+            frontstage.move(-127);
+            chassis.moveToPoint(-50, -17, 900);
+            chassis.waitUntilDone();            
+            chassis.moveToPoint(-52, -25, 500,{.maxSpeed = 80,.minSpeed = 100});
+            chassis.waitUntilDone();
             intake.move(-127);
+            chassis.moveToPoint(-57, -27, 500,{.maxSpeed = 80,.minSpeed = 100});
+            chassis.turnToHeading(180, 300);
+            chassis.moveToPoint(-42, -7, 1000, { .forwards = false, .minSpeed = 100});
+            chassis.moveToPoint(-39, -26, 1000);
+            chassis.turnToHeading(30, 500);
+            chassis.moveToPoint(-10, -5, 750);
+            chassis.turnToHeading(0, 500);
+            chassis.waitUntilDone();
+            clamp.set_value(false);
+            chassis.moveToPoint(-10, 40, 1350, {.maxSpeed = 80});
+            chassis.waitUntilDone();
+            intake.move(0);
+            chassis.turnToHeading(90, 500);
+            chassis.moveToPoint(-35, 45, 1000, {.forwards = false});
+            chassis.waitUntilDone();
+            clamp.set_value(true);
+            chassis.turnToHeading(0, 750);
+            chassis.waitUntilDone();
+            intake.move(-127);
+            chassis.moveToPoint(-40, 65, 750,{.minSpeed = 110});
+            chassis.turnToHeading(180, 500);
+            chassis.waitUntilDone();
+            intake.move(0);
+            chassis.moveToPoint(-45,40, 750);
+            chassis.waitUntilDone();
+            nextState();
+            nextState();
+            nextState();
+
+
+
             break;    
     }
 
@@ -587,6 +758,17 @@ void opcontrol() {
                 A_pressed = true;
             }
 		}
+
+        if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)){
+            currstate = 2;
+            nextState();
+        }
+        
+         if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)){
+            pros::Task autoLoad{[] {
+                easyLoad();
+            }};
+        }
 
         // BOT MOVEMENT!!!!!!!
 
