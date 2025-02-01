@@ -785,14 +785,12 @@ void autonomous() {
             chassis.setPose(0, 0, 0);
             intakespin = true;
             runfrontstage = true;
-            state360();
             doink.set_value(true);
-            chassis.moveToPoint(0, 33, 900, {.minSpeed = 80});
+            chassis.moveToPoint(0, 35, 900, {.minSpeed = 80});
             chassis.turnToHeading(300, 700);
             chassis.moveToPoint(17, 26, 1200, {.forwards = false, .maxSpeed = 90});
             chassis.waitUntilDone();
             doink.set_value(true);
-            state360();
             chassis.waitUntilDone();
             clamp.set_value(false);
             chassis.moveToPoint(-13, 30, 1000, {.maxSpeed = 80});
