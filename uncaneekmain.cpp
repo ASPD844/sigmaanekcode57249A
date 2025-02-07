@@ -107,7 +107,7 @@ lemlib::Chassis chassis(drivetrain, // drivetrain settings
 );
 
 const int numstates = 4;
-int states[numstates] = {0, 14, 30, 145};
+int states[numstates] = {0, 16, 28, 145};
 int currstate = 0;
 int target = 0;
 
@@ -133,7 +133,7 @@ void state360(){
 }
 
 void liftControl(){
-    double kp = 3.5 ;
+    double kp = 2.1;
     double error = target - (wallrotational.get_position()/100.0);
     if ((wallrotational.get_position()/100.0) > 350) {
        error = (360 + target) - (wallrotational.get_position()/100.0); 
@@ -779,40 +779,52 @@ void autonomous() {
         case 5: // SAWP red
             alliancecolor = true;
             chassis.setPose(0, 0, 320);
-            chassis.moveToPoint(-8.5, 9, 1000);
+            chassis.moveToPoint(-8.5, 10, 2000,{.maxSpeed = 80});
             chassis.waitUntilDone();
             nextState();
             nextState();
             nextState();
             pros::delay(750);
-            chassis.turnToHeading(335, 500);
             nextState();
-            chassis.moveToPoint(7, -25, 1250, {.forwards = false, .maxSpeed = 75});
+            chassis.turnToHeading(315, 500);
+            chassis.moveToPoint(7, -10, 750, {.forwards = false, .maxSpeed = 75});
+            chassis.moveToPoint(7, -25, 500, {.forwards = false, .maxSpeed = 75});
             chassis.waitUntilDone();
             pros::delay(250);
             clamp.set_value(false);
-            chassis.turnToHeading(130, 1000);
-            chassis.waitUntilDone();
+            // chassis.turnToHeading(130, 1000);
+            // chassis.waitUntilDone();
+            // intakespin = true;
+            // chassis.moveToPoint(20, -33, 1500);
+            // chassis.turnToHeading(150, 500);
+            // chassis.moveToPoint(7, -17, 1250, {.forwards = false});
+            // chassis.turnToHeading(90, 750);
             intakespin = true;
-            chassis.moveToPoint(20, -35, 1500);
-            chassis.turnToHeading(150, 500);
-            chassis.moveToPoint(7, -17, 1250, {.forwards = false});
-            chassis.turnToHeading(90, 750);
-            chassis.moveToPoint(30, -17, 2000);
+            chassis.turnToHeading(90, 500);
+            chassis.moveToPoint(30, -19, 1500);
             chassis.turnToHeading(330, 750);
-            chassis.moveToPoint(-7, -7, 800);
+            chassis.moveToPoint(-7, 0, 800);
             chassis.turnToHeading(270, 600);
             chassis.waitUntilDone();
             clamp.set_value(true);
-            chassis.moveToPoint(-30, -5, 1000);
+            chassis.moveToPoint(-45, 2, 3000, {.maxSpeed = 90});
             chassis.waitUntilDone();
-            intakespin = false;
             runfrontstage = true;
             chassis.turnToHeading(0, 750);
-            chassis.moveToPoint(-40, -17, 750,{.forwards = false});
+            chassis.moveToPoint(-37, -30, 750,{.forwards = false});
+            chassis.waitUntilDone();
             pros::delay(500);
             clamp.set_value(false);
-            chassis.turnToHeading(270, 750); 
+            runfrontstage = false;
+    
+            chassis.turnToHeading(270, 500);
+            chassis.moveToPoint(-60, -20, 750);
+            chassis.turnToHeading(90, 750);
+            chassis.moveToPoint(-30, -20, 1000);
+            chassis.waitUntilDone();
+            nextState();
+            nextState();
+            nextState();
 
 
 
